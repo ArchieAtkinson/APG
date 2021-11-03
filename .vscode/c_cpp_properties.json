@@ -5,7 +5,7 @@
             "includePath": [
                 "C:/mingw/mingw64/bin/**",
                 "${workspaceFolder}/**",
-                "C:/raylib-3.7.0/**"
+                "C:/raylib-master/**"
             ],
             "defines": [
                 "_DEBUG",

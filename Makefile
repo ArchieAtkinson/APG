@@ -26,7 +26,7 @@
 # Define required raylib variables
 PROJECT_NAME       ?= APG
 RAYLIB_VERSION     ?= 3.8.0
-RAYLIB_PATH        ?= C:/raylib-3.7.0/
+RAYLIB_PATH        ?= C:/raylib-master/
 
 # Define compiler path on Windows
 # COMPILER_PATH      ?= C:/msys64/mingw64/bin/

@@ -6,9 +6,13 @@
 #include "raylib.h"
 #include "raymath.h"
 
-const int screenWidth = 2880;
+const int screenWidth = 500;
 const int screenHeight = int(screenWidth * 1.414f);
-const int border = int(screenWidth * 0.05);
+
+const int posterWidth = 3508;
+const int posterHeight = 4961;
+
+const int border = int(posterWidth * 0.05);
 
 class AlbumInfo {
 public:
@@ -56,11 +60,15 @@ public:
   }
 };
 
+RenderTexture viewport;
+
 int main() {
   // Initialization
   //--------------------------------------------------------------------------------------
 
   InitWindow(screenWidth, screenHeight, "APG");
+
+  viewport = LoadRenderTexture(posterWidth , posterHeight);
 
   Font font_black = LoadFontEx("resources/Urbanist-Black.ttf", 256, 0, 0);
   Font font_bold = LoadFontEx("resources/Urbanist-Bold.ttf", 256, 0, 0);
@@ -69,7 +77,7 @@ int main() {
   SetTargetFPS(60);  // Set our game to run at 60 frames-per-second
 
   auto cover_art_img = LoadImage("data/folklore.jpg");
-  int img_size = screenWidth - (border * 2);
+  int img_size = posterWidth - (border * 2);
   ImageResize(&cover_art_img, img_size, img_size);
   auto cover_art_tex = LoadTextureFromImage(cover_art_img);
 
@@ -81,51 +89,67 @@ int main() {
   {
     // Draw5
     //----------------------------------------------------------------------------------
-    BeginDrawing();
+    
+    BeginTextureMode(viewport);
+      DrawRectangle(0,0, posterWidth, posterHeight, RAYWHITE);
 
-    ClearBackground(RAYWHITE);
+      DrawTexture(cover_art_tex, border, border, WHITE);
 
-    DrawTexture(cover_art_tex, border, border, WHITE);
+      const char* album_name = album_info.album_name.c_str();
+      int album_font_size = int(posterWidth * 0.075f);
+      Vector2 album_pos{border, (1.1 * border) + img_size};
+      DrawTextEx(font_black, album_name, album_pos, album_font_size , 1.0f, BLACK);
 
-    const char* album_name = album_info.album_name.c_str();
-    int album_font_size = int(screenWidth * 0.075f);
-    Vector2 album_pos{border, (1.1 * border) + img_size};
-    DrawTextEx(font_black, album_name, album_pos, album_font_size , 1.0f, BLACK);
+      const char* artist_name = album_info.artist_name.c_str();
+      int artist_font_size = int(posterWidth * 0.035f);
+      Vector2 artist_pos{border, album_pos.y + album_font_size};
+      DrawTextEx(font_bold, artist_name, artist_pos, artist_font_size, 1.0f, BLACK);
 
-    const char* artist_name = album_info.artist_name.c_str();
-    int artist_font_size = int(screenWidth * 0.035f);
-    Vector2 artist_pos{border, album_pos.y + album_font_size};
-    DrawTextEx(font_bold, artist_name, artist_pos, artist_font_size, 1.0f, BLACK);
+      const char* album_date = album_info.album_date.c_str();
+      int date_font_size = int(posterWidth * 0.030f);
+      Vector2 date_pos{posterWidth - border - date_font_size * 5, album_pos.y + album_font_size*1.1};
+      DrawTextEx(font_bold, album_date, date_pos, date_font_size, 1.0f, BLACK);
 
-    const char* album_date = album_info.album_date.c_str();
-    int date_font_size = int(screenWidth * 0.030f);
-    Vector2 date_pos{screenWidth - border - date_font_size * 5, album_pos.y + album_font_size*1.1};
-    DrawTextEx(font_bold, album_date, date_pos, date_font_size, 1.0f, BLACK);
-
-    Vector2 line_start{border, artist_pos.y + artist_font_size + 10};
-    Vector2 line_end{screenWidth - border, line_start.y};
-    DrawLineEx(line_start, line_end, 5.0f, BLACK);
+      Vector2 line_start{border, artist_pos.y + artist_font_size + 10};
+      Vector2 line_end{posterWidth - border, line_start.y};
+      DrawLineEx(line_start, line_end, 5.0f, BLACK);
 
 
-    int track_font_size = int(screenWidth * 0.025f);
-    Vector2 track_base_pos{border, line_start.y + 10};
-    Vector2 track_offset_pos{0, 0};
-    for (auto i = 0; i < album_info.track_names.size(); i++) {
-      const char* track_cstr = album_info.track_names[i].c_str();
-      Vector2 track_pos = Vector2Add(track_base_pos, track_offset_pos);
-      DrawTextEx(font_reg, track_cstr, track_pos, track_font_size, 1.0f, BLACK);
-      track_offset_pos.y += track_font_size;
-      if (track_pos.y > (screenHeight - border - track_font_size)){
-        track_offset_pos.y = 0;
-        track_offset_pos.x = screenWidth/2.0f;
+      int track_font_size = int(posterWidth * 0.025f);
+      Vector2 track_base_pos{border, line_start.y + 10};
+      Vector2 track_offset_pos{0, 0};
+      for (auto i = 0; i < album_info.track_names.size(); i++) {
+        const char* track_cstr = album_info.track_names[i].c_str();
+        Vector2 track_pos = Vector2Add(track_base_pos, track_offset_pos);
+        DrawTextEx(font_reg, track_cstr, track_pos, track_font_size, 1.0f, BLACK);
+        track_offset_pos.y += track_font_size;
+        if (track_pos.y > (posterHeight - border - track_font_size)){
+          track_offset_pos.y = 0;
+          track_offset_pos.x = posterWidth/2.0f;
+        }
       }
-    }
-      EndDrawing();
+
+    EndTextureMode();
+
+
+    BeginDrawing();
+      ClearBackground(RAYWHITE);
+      DrawTexturePro(viewport.texture, {0, 0, posterWidth, -posterHeight}, {0, 0, screenWidth, screenHeight} ,{0,0}, 0.0f,WHITE);
+    EndDrawing();
 
       
       //----------------------------------------------------------------------------------
   }
-  TakeScreenshot("test.png");
+
+  Image viewport_img = LoadImageFromTexture(viewport.texture);
+  ImageFlipVertical(&viewport_img);
+  // std::filesystem::create_directories("output");
+  const char* output_file_name =
+      TextFormat("%s - %s.png", album_info.album_name.c_str(),
+                 album_info.artist_name.c_str());
+  ExportImage(viewport_img, output_file_name);
+  UnloadImage(viewport_img);
+
   // De-Initialization
   //--------------------------------------------------------------------------------------
   CloseWindow();  // Close window and OpenGL context
