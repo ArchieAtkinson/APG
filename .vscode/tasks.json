@@ -31,6 +31,25 @@
             ]
         },
         {
+            "label": "clean",
+            "type": "process",
+            "command": "make",
+            "args": [
+                "clean"
+            ],
+            "windows": {
+                "command": "C:/mingw/mingw64/bin/mingw32-make.exe",
+                "args": [ ]
+            },
+            "osx": {
+                "args": [ ]
+            },
+            "group": "none",
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
             "label": "build release",
             "type": "process",
             "command": "make",
