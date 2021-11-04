@@ -17,9 +17,7 @@ public:
 
     AlbumInfo(std::string filepath)
     {
-        // const char *filepath_c = filepath.c_str();
         std::ifstream file(filepath);
-        // file.open;
         
         if (!file)
         {
