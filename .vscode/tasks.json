@@ -70,8 +70,8 @@
             "windows": {
                 "command": "${workspaceFolder}/build/APG.exe",
                 "args": [
-                    "data/raceforspace.jpg",
-                    "data/raceforspace.txt"
+                    "example_data/raceforspace.jpg",
+                    "example_data/raceforspace.txt"
                 ]
             },
             "dependsOn": ["clean","build release"],
