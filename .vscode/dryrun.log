@@ -1,3 +1,4 @@
-C:\msys64\usr\bin\make.exe all --dry-run --keep-going --print-directory
-The system cannot find the path specified.
+C:\msys64\usr\bin\make.exe --dry-run --keep-going --print-directory
+'"C:\msys64\usr\bin\make.exe"' is not recognized as an internal or external command,
+operable program or batch file.
  

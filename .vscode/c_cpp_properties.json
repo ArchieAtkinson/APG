@@ -3,7 +3,7 @@
         {
             "name": "Win32",
             "includePath": [
-                "C:/mingw/mingw64/bin/**",
+                "C:/msys64/mingw64/**",
                 "${workspaceFolder}/**",
                 "C:/raylib-master/**"
             ],
@@ -17,7 +17,8 @@
             "compilerPath": "C:/mingw/mingw64/bin/g++.exe",
             "cStandard": "c99",
             "cppStandard": "c++17",
-            "intelliSenseMode": "gcc-x64"
+            "intelliSenseMode": "gcc-x64",
+            "configurationProvider": "ms-vscode.makefile-tools"
         },
         {
             "name": "Mac",

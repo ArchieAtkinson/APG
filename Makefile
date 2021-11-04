@@ -272,8 +272,8 @@ ifeq ($(PLATFORM),PLATFORM_DESKTOP)
     endif
 endif
 
-# Define library paths containing required libs.
-LDFLAGS = -L. -L$(RAYLIB_RELEASE_PATH) -L$(RAYLIB_PATH)/src
+# Define library paths containing required libs. (--static added to fix bug with DLLs)
+LDFLAGS = -L. -L$(RAYLIB_RELEASE_PATH) -L$(RAYLIB_PATH)/src --static
 
 ifeq ($(PLATFORM),PLATFORM_DESKTOP)
     ifeq ($(PLATFORM_OS),BSD)
