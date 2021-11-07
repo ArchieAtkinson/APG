@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/build/APG.exe",
             "args": [
-                "example_data/raceforspace.jpg",
+                "example_data/raceforspace.png",
                 "example_data/raceforspace.txt"
             ],
             "stopAtEntry": false,
