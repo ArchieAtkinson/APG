@@ -4,8 +4,8 @@
             "name": "Win32",
             "includePath": [
                 "C:/msys64/mingw64/**",
-                "${workspaceFolder}/**",
-                "C:/raylib-master/**"
+                "${workspaceFolder}/inc",
+                "${workspaceFolder}/external/**"
             ],
             "defines": [
                 "_DEBUG",
@@ -14,11 +14,14 @@
                 "GRAPHICS_API_OPENGL_33",
                 "PLATFORM_DESKTOP"
             ],
-            "compilerPath": "C:/mingw/mingw64/bin/g++.exe",
+            "compilerPath": "C:/msys64/mingw64/bin/g++.exe",
             "cStandard": "c99",
             "cppStandard": "c++17",
             "intelliSenseMode": "gcc-x64",
-            "configurationProvider": "ms-vscode.makefile-tools"
+            "configurationProvider": "ms-vscode.makefile-tools",
+            "browse": {
+                "path": []
+            }
         },
         {
             "name": "Mac",

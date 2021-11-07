@@ -12,8 +12,9 @@ public:
     std::string album_name;
     std::string artist_name;
     std::string album_date;
-    std::string album_length_mins;
+    std::string album_duration;
     std::vector<std::string> track_names;
+    std::string track_list;
 
     AlbumInfo(std::string filepath)
     {
@@ -48,12 +49,13 @@ public:
             }
             case 3:
             {
-                this->album_length_mins = line;
+                this->album_duration = line;
                 break;
             }
             default:
             {
                 track_names.push_back(std::to_string(line_count - 3) + ". " + line);
+                track_list += std::to_string(line_count - 3) + ". " + line + "\n";
                 break;
             }
             }

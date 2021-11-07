@@ -26,7 +26,9 @@
 # Define required raylib variables
 PROJECT_NAME       ?= APG
 RAYLIB_VERSION     ?= 3.8.0
-RAYLIB_PATH        ?= C:/raylib-master/
+RAYLIB_PATH        ?= ./external/raylib
+
+EXTERNAL_INC = -I./external/argparse/include/argparse -I./external/raygui/src
 
 # Define compiler path on Windows
 # COMPILER_PATH      ?= C:/msys64/mingw64/bin/
@@ -251,7 +253,7 @@ endif
 
 # Define include paths for required headers
 # NOTE: Several external required libraries (stb and others)
-INCLUDE_PATHS = -I. -I$(RAYLIB_PATH)/src -I$(RAYLIB_PATH)/src/external
+INCLUDE_PATHS = -I. -I$(RAYLIB_PATH)/src -I$(RAYLIB_PATH)/src/external -I./inc $(EXTERNAL_INC)
 
 # Define additional directories containing required header files
 ifeq ($(PLATFORM),PLATFORM_RPI)
