@@ -1,5 +1,5 @@
-#ifndef ALBUM_INFO_HPP
-#define ALBUM_INFO_HPP
+#ifndef ALBUM_INFO_H
+#define ALBUM_INFO_H
 
 #include <fstream>
 #include <iostream>

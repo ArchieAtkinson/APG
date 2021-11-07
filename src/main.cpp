@@ -7,8 +7,9 @@
 
 #include "../external/argparse/include/argparse/argparse.hpp"
 
-#include "../inc/album_info.hpp"
-#include "../inc/display.hpp"
+#include "../inc/album_info.h"
+#include "../inc/display.h"
+#include "../inc/root_dir.h"
 
 int screenWidth = 1080;
 int screenHeight = 1920;
@@ -40,8 +41,8 @@ int main(int argc, char const *argv[])
     //--------------------------------------------------------------------------------------
 
     argparse::ArgumentParser program("APG");
-    program.add_argument("artwork");
-    program.add_argument("info");
+    program.add_argument("artwork").default_value(APG::ROOT_DIR + "/example_data/raceforspace.png");
+    program.add_argument("info").default_value(APG::ROOT_DIR + "/example_data/raceforspace.txt");
 
     try
     {
@@ -64,14 +65,13 @@ int main(int argc, char const *argv[])
 
     viewport = LoadRenderTexture(posterWidth, posterHeight);
 
-    Font font_black = LoadFontEx("resources/Urbanist-Black.ttf", 256, 0, 0);
-    Font font_bold = LoadFontEx("resources/Urbanist-Bold.ttf", 256, 0, 0);
+    std::string fontpath_black = APG::ROOT_DIR + "/resources/Urbanist-Black.ttf";
+    std::string fontpath_bold = APG::ROOT_DIR + "/resources/Urbanist-Bold.ttf";
+    Font font_black = LoadFontEx(fontpath_black.c_str(), 256, 0, 0);
+    Font font_bold = LoadFontEx(fontpath_bold.c_str(), 256, 0, 0);
 
     auto cover_art_tex = create_album_cover_texture(cover_art_path);
-
     auto album_info = AlbumInfo(info_file_path);
-
-    std::cout << album_info.track_list << std::endl;
 
     while (!WindowShouldClose()) // Detect window close button or ESC ey
     {
@@ -82,7 +82,7 @@ int main(int argc, char const *argv[])
         DrawTexture(cover_art_tex, border, border, WHITE);
 
         TextLine album_name(album_info.album_name, font_black, posterWidth * 0.075f);
-        album_name.set_reference_point({border, border + cover_art_tex.height});
+        album_name.set_reference_point({border, static_cast<float>(border) + cover_art_tex.height});
         album_name.set_offset({0, album_name.size * 0.1f});
         album_name.draw();
 
@@ -91,18 +91,18 @@ int main(int argc, char const *argv[])
         artist_name.set_offset({0, album_name.size});
         artist_name.draw();
 
-        Vector2 line_start{border, artist_name.position.y + artist_name.size * 1.1};
+        Vector2 line_start{border, artist_name.position.y + artist_name.size * 1.1f};
         Vector2 line_end{posterWidth - border, line_start.y};
         DrawLineEx(line_start, line_end, line_thickness, BLACK);
 
         TextLine album_date(album_info.album_date, font_bold, posterWidth * 0.025f);
         album_date.set_reference_point({posterWidth - border, line_end.y});
-        album_date.set_offset({ -album_date.get_length(), -(artist_name.size * 0.1 + album_date.size)});
+        album_date.set_offset({ -album_date.get_length(), -(artist_name.size * 0.1f + album_date.size)});
         album_date.draw();
 
         TextLine album_duration(album_info.album_duration, font_bold, posterWidth * 0.025f);
-        album_duration.set_reference_point(album_date.set_reference_point());
-        album_duration.set_offset({ -album_duration.get_length(), artist_name.size * 0.1});
+        album_duration.set_reference_point(album_date.get_reference_point());
+        album_duration.set_offset({ -album_duration.get_length(), artist_name.size * 0.1f});
         album_duration.draw();
 
         double space_for_track_list = (posterHeight - border) - (line_start.y + artist_name.size * 0.1f);
