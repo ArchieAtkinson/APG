@@ -1,3 +1,4 @@
 /build
 /test.png
 *.png
+/inc/root_dir.h
