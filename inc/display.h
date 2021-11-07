@@ -1,5 +1,5 @@
-#ifndef DISPLAY_HPP
-#define DISPLAY_HPP
+#ifndef DISPLAY_H
+#define DISPLAY_H
 
 #include <iostream>
 #include <string>
@@ -22,7 +22,7 @@ class Element
     Vector2 get_offset(){
         return m_offset;
     }
-    Vector2 set_reference_point(){
+    Vector2 get_reference_point(){
         return m_reference_point;
     }
   public:
