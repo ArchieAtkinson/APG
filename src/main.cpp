@@ -34,7 +34,6 @@ Texture2D create_album_cover_texture(std::string filepath)
     return texture;
 }
 
-
 int main(int argc, char const *argv[])
 {
     // Initialization
@@ -87,40 +86,68 @@ int main(int argc, char const *argv[])
         album_name.draw();
 
         TextLine artist_name(album_info.artist_name, font_bold, posterWidth * 0.035f);
-        artist_name.set_reference_point(album_name.position);
+        artist_name.set_reference_point(album_name.get_position());
         artist_name.set_offset({0, album_name.size});
         artist_name.draw();
 
-        Vector2 line_start{border, artist_name.position.y + artist_name.size * 1.1f};
+        Vector2 line_start{border, artist_name.get_position().y + artist_name.size * 1.1f};
         Vector2 line_end{posterWidth - border, line_start.y};
         DrawLineEx(line_start, line_end, line_thickness, BLACK);
 
         TextLine album_date(album_info.album_date, font_bold, posterWidth * 0.025f);
         album_date.set_reference_point({posterWidth - border, line_end.y});
-        album_date.set_offset({ -album_date.get_length(), -(artist_name.size * 0.1f + album_date.size)});
+        album_date.set_offset({-album_date.get_length(), -(artist_name.size * 0.1f + album_date.size)});
         album_date.draw();
 
         TextLine album_duration(album_info.album_duration, font_bold, posterWidth * 0.025f);
         album_duration.set_reference_point(album_date.get_reference_point());
-        album_duration.set_offset({ -album_duration.get_length(), artist_name.size * 0.1f});
+        album_duration.set_offset({-album_duration.get_length(), artist_name.size * 0.1f});
         album_duration.draw();
 
-        double space_for_track_list = (posterHeight - border) - (line_start.y + artist_name.size * 0.1f);
-        int track_font_size = static_cast<int>(round(space_for_track_list / static_cast<double>(num_tracks_per_col)));
-        Vector2 track_base_pos{border, line_start.y + artist_name.size * 0.1f};
-        Vector2 track_offset_pos{0, 0};
-        for (auto i = 0; i < album_info.track_names.size(); i++)
-        {
-            const char *track_cstr = album_info.track_names[i].c_str();
-            Vector2 track_pos = Vector2Add(track_base_pos, track_offset_pos);
-            DrawTextEx(font_bold, track_cstr, track_pos, track_font_size, 1.0f, BLACK);
-            track_offset_pos.y += track_font_size;
-            if (i == (num_tracks_per_col - 1))
-            {
-                track_offset_pos.y = 0;
-                track_offset_pos.x = posterWidth / 2.0f;
-            }
+        int  lines_per_side = 10;
+        if (album_info.track_names.size() < lines_per_side){
+            lines_per_side = album_info.track_names.size();
         }
+        std::vector<std::string> left_tracks_list(album_info.track_names.begin(), album_info.track_names.begin() + lines_per_side);
+        std::vector<std::string> right_tracks_list(album_info.track_names.begin() + lines_per_side, album_info.track_names.end());
+
+        std::string left_tracks;
+        for (auto tracks: left_tracks_list){
+            left_tracks += (tracks + "\n ");
+            std::cout << tracks << std::endl;
+        }
+
+        std::string right_tracks;
+        for (auto tracks: right_tracks_list){
+            right_tracks += (tracks + "\n ");
+        }
+
+        float space_for_track_list = (posterHeight - border) - (line_start.y + artist_name.size * 0.1f);
+        int track_font_size = static_cast<int>(round(space_for_track_list / static_cast<double>(num_tracks_per_col)));
+
+        float line_length = line_end.x - line_start.x;
+        TextBox left_track_TB(left_tracks, font_bold, track_font_size, {line_length, space_for_track_list});
+        left_track_TB.set_reference_point({line_start});
+        left_track_TB.set_offset({0, artist_name.size * 0.1f});
+        left_track_TB.draw();
+
+
+        // float space_for_track_list = (posterHeight - border) - (line_start.y + artist_name.size * 0.1f);
+        // Vector2 track_base_pos{border, line_start.y + artist_name.size * 0.1f};
+        // int track_font_size = static_cast<int>(round(space_for_track_list /
+        // static_cast<double>(num_tracks_per_col))); Vector2 track_base_pos{border, line_start.y + artist_name.size
+        // * 0.1f}; Vector2 track_offset_pos{0, 0}; for (auto i = 0; i < album_info.track_names.size(); i++)
+        // {
+        //     const char *track_cstr = album_info.track_names[i].c_str();
+        //     Vector2 track_pos = Vector2Add(track_base_pos, track_offset_pos);
+        //     DrawTextEx(font_bold, track_cstr, track_pos, track_font_size, 1.0f, BLACK);
+        //     track_offset_pos.y += track_font_size;
+        //     if (i == (num_tracks_per_col - 1))
+        //     {
+        //         track_offset_pos.y = 0;
+        //         track_offset_pos.x = posterWidth / 2.0f;
+        //     }
+        // }
 
         EndTextureMode();
 
@@ -133,6 +160,15 @@ int main(int argc, char const *argv[])
                        {(GetScreenWidth() - display_width) / 2, 0, display_width, display_height}, {0, 0}, 0.0f, WHITE);
         DrawRectangleLinesEx({(GetScreenWidth() - display_width) / 2, 0, display_width, display_height}, 3, BLACK);
 
+        std::string placeholder =
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et "
+            "dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip "
+            "ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu "
+            "fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt "
+            "mollit anim id est laborum.";
+
+        auto textbox = TextBox(placeholder, font_black, 30.0f, {500.0f, 5000.0f});
+        textbox.draw();
         EndDrawing();
 
         //----------------------------------------------------------------------------------
