@@ -20,7 +20,7 @@ const int posterHeight = 4961;
 const int border = int(posterWidth * 0.05);
 const int line_thickness = static_cast<int>(static_cast<float>(border) * 0.05f);
 const int cover_name_gap = border * 1.1f;
-const int num_tracks_per_col = 10;
+int num_tracks_per_col = 10;
 
 RenderTexture viewport;
 Texture2D create_album_cover_texture(std::string filepath)
@@ -40,8 +40,8 @@ int main(int argc, char const *argv[])
     //--------------------------------------------------------------------------------------
 
     argparse::ArgumentParser program("APG");
-    program.add_argument("artwork").default_value(APG::ROOT_DIR + "/example_data/raceforspace.png");
-    program.add_argument("info").default_value(APG::ROOT_DIR + "/example_data/raceforspace.txt");
+    program.add_argument("artwork").default_value(APG::ROOT_DIR + "/example_data/folklore.png");
+    program.add_argument("info").default_value(APG::ROOT_DIR + "/example_data/folklore.txt");
 
     try
     {
@@ -60,7 +60,7 @@ int main(int argc, char const *argv[])
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(screenWidth, screenHeight, "APG");
     MaximizeWindow();
-    SetTargetFPS(1);
+    SetTargetFPS(60);
 
     viewport = LoadRenderTexture(posterWidth, posterHeight);
 
@@ -104,17 +104,15 @@ int main(int argc, char const *argv[])
         album_duration.set_offset({-album_duration.get_length(), artist_name.size * 0.1f});
         album_duration.draw();
 
-        int  lines_per_side = 10;
-        if (album_info.track_names.size() < lines_per_side){
-            lines_per_side = album_info.track_names.size();
+        if (album_info.track_names.size() > num_tracks_per_col){
+            num_tracks_per_col = album_info.track_names.size() / 2;
         }
-        std::vector<std::string> left_tracks_list(album_info.track_names.begin(), album_info.track_names.begin() + lines_per_side);
-        std::vector<std::string> right_tracks_list(album_info.track_names.begin() + lines_per_side, album_info.track_names.end());
+        std::vector<std::string> left_tracks_list(album_info.track_names.begin(), album_info.track_names.begin() + num_tracks_per_col);
+        std::vector<std::string> right_tracks_list(album_info.track_names.begin() + num_tracks_per_col, album_info.track_names.end());
 
         std::string left_tracks;
         for (auto tracks: left_tracks_list){
             left_tracks += (tracks + "\n ");
-            std::cout << tracks << std::endl;
         }
 
         std::string right_tracks;
@@ -131,23 +129,10 @@ int main(int argc, char const *argv[])
         left_track_TB.set_offset({0, artist_name.size * 0.1f});
         left_track_TB.draw();
 
-
-        // float space_for_track_list = (posterHeight - border) - (line_start.y + artist_name.size * 0.1f);
-        // Vector2 track_base_pos{border, line_start.y + artist_name.size * 0.1f};
-        // int track_font_size = static_cast<int>(round(space_for_track_list /
-        // static_cast<double>(num_tracks_per_col))); Vector2 track_base_pos{border, line_start.y + artist_name.size
-        // * 0.1f}; Vector2 track_offset_pos{0, 0}; for (auto i = 0; i < album_info.track_names.size(); i++)
-        // {
-        //     const char *track_cstr = album_info.track_names[i].c_str();
-        //     Vector2 track_pos = Vector2Add(track_base_pos, track_offset_pos);
-        //     DrawTextEx(font_bold, track_cstr, track_pos, track_font_size, 1.0f, BLACK);
-        //     track_offset_pos.y += track_font_size;
-        //     if (i == (num_tracks_per_col - 1))
-        //     {
-        //         track_offset_pos.y = 0;
-        //         track_offset_pos.x = posterWidth / 2.0f;
-        //     }
-        // }
+        TextBox right_track_TB(right_tracks, font_bold, track_font_size, {line_length, space_for_track_list});
+        right_track_TB.set_reference_point({line_start.x + (line_start.x + line_end.x)/2, line_start.y});
+        right_track_TB.set_offset({0, artist_name.size * 0.1f});
+        right_track_TB.draw();
 
         EndTextureMode();
 
@@ -158,17 +143,9 @@ int main(int argc, char const *argv[])
 
         DrawTexturePro(viewport.texture, {0, 0, posterWidth, -posterHeight},
                        {(GetScreenWidth() - display_width) / 2, 0, display_width, display_height}, {0, 0}, 0.0f, WHITE);
-        DrawRectangleLinesEx({(GetScreenWidth() - display_width) / 2, 0, display_width, display_height}, 3, BLACK);
+        int line_thickness = GetScreenHeight() * 0.002f > 1 ? static_cast<int> (round( GetScreenHeight() * 0.002f)) : 1;
+        DrawRectangleLinesEx({(GetScreenWidth() - display_width) / 2, 0, display_width, display_height}, line_thickness, BLACK);
 
-        std::string placeholder =
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et "
-            "dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip "
-            "ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu "
-            "fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt "
-            "mollit anim id est laborum.";
-
-        auto textbox = TextBox(placeholder, font_black, 30.0f, {500.0f, 5000.0f});
-        textbox.draw();
         EndDrawing();
 
         //----------------------------------------------------------------------------------

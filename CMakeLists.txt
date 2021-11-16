@@ -15,6 +15,7 @@ endif()
 
 target_compile_options(${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:-DDEBUG>)
 configure_file(${CMAKE_SOURCE_DIR}/configuration/root_dir.h.in ${CMAKE_SOURCE_DIR}/inc/root_dir.h)
+
 target_include_directories(${PROJECT_NAME} PRIVATE inc)
 
 add_library(argparse INTERFACE)

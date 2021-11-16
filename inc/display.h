@@ -90,36 +90,52 @@ class TextBox : public Element
     void draw()
     {
         BeginScissorMode(m_position.x, m_position.y, m_box.x, m_box.y);
-        int current_line_length = 0;
-        int current_line_number = 0;
-        std::string wrapped_line;
-        for(auto word: word_list){
-            float length = MeasureTextEx(font, word.c_str(), size, 1.0f).x;
-            if (current_line_length + length >= m_box.x){
-                DrawTextEx(font, wrapped_line.c_str(),  {m_position.x, m_position.y + current_line_number * size}, size, 1.0f, color);
-                current_line_number++;
-                wrapped_line = "";
-                current_line_length = 0;
-            }
-            current_line_length += length;
-            wrapped_line += (word + " ");
-            if (word.find("\n") != std::string::npos){
-                DrawTextEx(font, wrapped_line.c_str(), {m_position.x, m_position.y + current_line_number * size}, size, 1.0f, color);
-                current_line_length = 0;
-                wrapped_line = "";
-                current_line_number++;
-            }
-        }
-        DrawTextEx(font, wrapped_line.c_str(), {m_position.x, m_position.y + current_line_number * size}, size, 1.0f, color);
+        switch (alignment)
+        {
+        case Align::LEFT:
+            draw_left();
+            break;
         
+        default:
+            break;
+        }
+
         EndScissorMode();
     }
   public:
+    enum class Align{
+        LEFT,
+        RIGHT,
+        CENTRE,
+    };
+    Align alignment = Align::LEFT;
     std::string text = "Placeholder";
     Font font = GetFontDefault();
     float size = 1.0f;
     Color color = BLACK;
   private:
+    void draw_left(){
+        int line_length = 0;
+        int line_num = 0;
+        std::string line;
+        for(auto word: word_list){
+            float length = MeasureTextEx(font, word.c_str(), size, 1.0f).x;  
+            if (line_length + length >= m_box.x * 0.92f){ // Magic Number is bandaid for MeasureTextEx() not being 100 correct
+                draw_line(line, line_num, line_length);
+            }
+            line_length += ceil(length);
+            line += (word + " ");
+            if (word.find("\n") != std::string::npos || word == word_list.back()){
+                draw_line(line, line_num, line_length);
+            }
+        }
+    }
+    void draw_line(std::string& line, int& line_num, int& line_length){
+            DrawTextEx(font, line.c_str(), {m_position.x, m_position.y + line_num * size}, size, 1.0f, color);
+            line_length = 0;
+            line = "";
+            line_num++;
+    }
     template <typename Out>
     void split(const std::string &s, char delim, Out result) {
         std::istringstream iss(s);
