@@ -28,4 +28,4 @@ If not using CMake a header file must be made in the inc folder with the root pa
 
 ## Other
 
-This has been tested only Window and Linux using g++ 17 and Ninja. If you have any problems or questions please create a ticket. Pull requests welcome. 
+This has been tested only Window and Linux using g++ 17 and Ninja. If you have any problems or questions please create a ticket. Pull requests welcome.
