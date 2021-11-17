@@ -10,7 +10,7 @@ The program take two arguments, album artwork (as .png) and album information (a
 
 `APG [path/to/album/artwork.png] [path/to/album/info.txt]`
 
-For insight on how to structure the info.txt, please look in the example_data folder. If no arguments are given it will use the Folklore example data will be used.
+For insight on how to structure the info.txt, please look in the example_data folder. If no arguments are given, example data will be used.
 
 Once you are started the program it will show you a render of the poster. If the text doesn't look great don't worry, it will look fine in the final image. To generate the poster just press escape and wait for a couple of seconds. The program will generate the poster and close. The output will be in the project directory.  
 
