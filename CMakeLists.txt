@@ -24,4 +24,3 @@ target_link_libraries(${PROJECT_NAME} PRIVATE argparse)
 
 add_subdirectory(external/raylib)
 target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
-
